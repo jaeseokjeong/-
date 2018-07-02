@@ -43,7 +43,7 @@ get_daily_kma <- function(start_date, end_date, personal_key){
 }
 
 #한번에 1,000개 이하로만 추출가능
-personal_key <- "b%2BFIxEFLShT5/%2BYGWqnYT2QTc%2BcIbzUITv4fTBIPlwENAqAtHWsXQ8krc37x/nUe"
+personal_key <- "자신의 API KEY"
 start_date <- "20100101"
 end_date <- "20100102"
 
