@@ -1,8 +1,5 @@
 ## 기상 / 공휴일 API
 
-getkma의 목적은 API를 활용하여  서울의 시간당 기상측정 데이터를 제공하는 것이다.
-
-
 # select_period : 불러올 기간
 # personal_key : 개인 API key
 
