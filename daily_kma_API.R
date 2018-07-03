@@ -43,8 +43,21 @@ get_daily_kma <- function(start_date, end_date, personal_key){
 }
 
 #한번에 1,000개 이하로만 추출가능
+
+# example_1
 personal_key <- "자신의 API KEY"
 start_date <- "20100101"
 end_date <- "20100102"
 
 example <- get_daily_kma(start_date, end_date, personal_key)
+
+#example_2
+#1 & 2월 뽑아오기
+weather_information <- list()
+
+weather_informaiton[1] <- get_daily_kma("20160101", "20160131", personal_key)
+weather_informaiton[2] <- get_daily_kma("20160201", "20160228", personal_key)
+
+weather_info <- data.table:: rbindlist(weather_information)
+
+
