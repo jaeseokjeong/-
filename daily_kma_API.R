@@ -1,6 +1,7 @@
 ## 기상 / 공휴일 API
 
-# select_period : 불러올 기간
+# start_date : 불러올 시작일
+# end_date : 불러올 종료일
 # personal_key : 개인 API key
 
 get_daily_kma <- function(start_date, end_date, personal_key){
@@ -18,7 +19,7 @@ get_daily_kma <- function(start_date, end_date, personal_key){
   url4 <- "&apiKey="
   mykey <- personal_key
   
-  
+  #주소결합
   selected_period <- paste0(url1,
                             url2,
                             start_date,
@@ -27,11 +28,12 @@ get_daily_kma <- function(start_date, end_date, personal_key){
                             url4,
                             personal_key)
   
-  
+  #R로 불러오기
   result <- GET(selected_period)
   json <- content(result , as = "text")
   processed_json <- fromJSON(json)
-
+  
+  #불러올 변수명 선택(필요하면 word에 있는 다른변수 넣어도 됨)
   weather_informaiton <- processed_json$info[[4]] %>% 
     dplyr::select(TM,AVG_TA,AVG_WS,AVG_RHM)
   
