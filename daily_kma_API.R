@@ -1,5 +1,11 @@
 ## 기상 / 공휴일 API
 
+#need_package
+library(httr)
+library(curl)
+library(jsonlite)
+library(dplyr)
+
 # start_date : 불러올 시작일
 # end_date : 불러올 종료일
 # personal_key : 개인 API key
