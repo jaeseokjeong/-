@@ -1,3 +1,10 @@
+#need_package
+library(httr)
+library(curl)
+library(jsonlite)
+library(dplyr)
+
+
 # selected_year : 추출할 년도
 # personal_key : 개인 API key
 
@@ -51,5 +58,6 @@ get_holiday <- function(selected_year, personal_key) {
 }
 
 # example
-personal_key_1 <- "OnPJtzwZ1whjsi5DVpR686UT8lF5iJvSaaTi6Js6ri5Sg8ANHDy%2FxnnxIMqY1JpTgA%2FFbxrR3XEkODH1MAJSzA%3D%3D"
+# 2016년 공휴일 데이터 가져오기 
+personal_key_1 <- "자신의 API key"
 holiday_table <- get_holiday("2016", personal_key_1)
