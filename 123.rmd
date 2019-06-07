@@ -1,0 +1,97 @@
+---
+title: "Untitled"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+#data 불러들이기
+```{r}
+library(lubridate)
+library(data.table)
+setwd("C:/Users/손광민/Desktop")
+
+a <- fread("C:/Users/손광민/Desktop/rent.csv",encoding="UTF-8")
+colnames(a) <- c("date","day","sex","age","si","gu","dong","count")
+a$date <- ymd(a$date)
+head(a)
+tail(a)
+str(a)
+```
+
+```{r}
+library(dplyr)
+library(plotly)
+dat16 <- a%>%filter(date<"2017-01-01")
+dat17 <- a%>%filter(date>="2017-01-01")%>%filter(date<"2018-01-01")
+
+aday <- a%>%group_by(day)%>%summarise(num=sum(count))
+plot_ly(y=aday$num,color=aday$day,x=aday$day , type ="bar")
+
+sg <- dat17%>%filter(si=="서울특별시"|si=="경기도")
+b <- unique(sg$dong)
+```
+
+```{r}
+library(ggmap)
+bc <- geocode(b,source="google")
+bc <- cbind(b,bc)
+bbbb <- bc[is.na(bc[,2])=="TRUE",]
+bbbb <- bbbb[,1]
+bbbb <- as.character(bbbb)
+k <- geocode(bbbb,source="google")
+bc[is.na(bc[,2])=="TRUE",2:3] <- k
+bc
+bbbb2 <- bc[is.na(bc[,2])=="TRUE",]
+bbbb2 <- bbbb2[,1]
+bbbb2 <- as.character(bbbb2)
+k2 <- geocode(bbbb2,source="google")
+bc[is.na(bc[,2])=="TRUE",2:3] <- k2
+bc
+bbbb3 <- bc[is.na(bc[,2])=="TRUE",]
+bbbb3 <- bbbb3[,1]
+bbbb3 <- as.character(bbbb3)
+k3 <- matrix(0,12,2)
+
+```
+
+```{r}
+library(ggplot2)
+library(plotly)
+#렌터카 요일별 비교 (주말이 적은 것 확인)
+sgd <- sg%>%group_by(day)
+sgdd <- sg%>%group_by(day)%>%summarise(num=sum(count))
+plot_ly(y = sgdd$num, x=sgdd$day, color=sgdd$day)
+plot_ly(y = sgd$count, color=sgd$day, type = "box",jitter = 0.3)
+
+
+#렌터카 월별 비교 여름(성수기) 높음
+sgz <- sg %>%dplyr:: group_by(date=lubridate:: month(date)) 
+rent_month <- sg %>%
+  dplyr:: group_by(date=lubridate:: month(date)) %>% 
+  dplyr:: summarise(num = sum(count))
+plot_ly(y = sgz$count, x =sgz$date, type = "bar",jitter = 0.3, color=sgz$date)
+
+#렌터카 성별 비교 (남자가 2배정도 많이 이용)
+sgs <- sg%>%group_by(sex)
+sgss <- sg%>%group_by(sex)%>%summarise(num = sum(count))
+plot_ly(y=sgss$num, x=sgss$sex ,color=sgss$sex, type="bar")
+#1144558번 #615830번
+plot_ly(y = sgs$count, color=sgs$sex, type = "box",jitter = 0.3)
+
+
+#렌터카 나이대별 비교 => 30/40대가 주로 이용하는 것을 확인.
+#전 연령층이 고루 사용하고 있음.
+sga <- sg%>%group_by(age)
+sgaa <- sg%>%group_by(age)%>%summarise(num = sum(count))
+plot_ly(y=sgaa$num, x=sgaa$age ,color=sgaa$age, type="bar")
+plot_ly(y = sga$count, x=sga$age, color=sga$age , type = "scatter")
+
+```
+
+#
+```{r}
+
+
+
+```
+
