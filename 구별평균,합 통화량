@@ -1,0 +1,80 @@
+```{r}
+library(data.table)
+library(dplyr)
+library(plotly)
+library(ggplot2)
+library(ggmap)
+setwd("C:/Users/82104/Desktop/kma")
+dat <- fread("final_seoul.csv")
+head(dat)
+tail(dat)
+
+gumean <- dat%>%group_by(gu)%>%summarise(mean=mean(sum_tel,na.rm=T))
+gumean$mean
+
+gubyeol <- fread("gubyeol.csv")
+gubyeol <- gubyeol[,-1]
+colnames(gubyeol) <- c("gu","sum_gu")
+gu <- fread("dat.csv")
+namesgu <- unique(gu$gu)
+```
+
+```{r}
+library(tmap)
+library(maptools)
+shp2 <- readShapePoly("D:\\New\\KOR_adm\\KOR_adm2.shp")
+Encoding(shp2) <- "UTF-8"
+shp2$NL_NAME_2
+Encoding(shp2$NL_NAME_2)<-"UTF-8"
+shp2$NL_NAME_2
+str(shp2@data)
+shp2_subset <- shp2[shp2$NAME_1 == "Seoul",]
+seoul_ffd <- fortify(shp2_subset, region="NAME_2")
+head(seoul_ffd)
+tail(seoul_ffd)
+seoul_ffd$id
+gubyeol$gu <- namesgu
+gubyeol
+seoul_ffd
+
+gumean$gu <- namesgu
+```
+
+
+```{r}
+shp2 <- readShapePoly("D:\\New\\KOR_adm\\KOR_adm2.shp")
+library(rgdal)
+shp <- readOGR("D:\\New\\KOR_adm\\KOR_adm2.shp")
+shp
+qtm("Seoul")
+shp2_subset <- shp[shp$NAME_1 == "Seoul",]
+seoul_ffd <- fortify(shp2_subset, region="NAME_2")
+
+ggplot(seoul_ffd, aes(x=long, y=lat, group=group)) + 
+  geom_polygon(aes(fill=id))
+
+seoul_ffd
+
+gumean$id <-  c("Gangnam","Gandong","Gangbuk","Gangseo","Gwanak","Gwang-jin","Guro","Geum-cheon","Nowon","Dobong","Dong-daemun","Dongjak","Mapo","Seodaemun","Seocho","Seongdong","Seongbuk","Songpa","Yangcheon","Yeongdeungpo","Yongsan","Eun-pyeong","Jongro","Jung","Jungnang")
+gubyeol$id <- c("Gangnam","Gandong","Gangbuk","Gangseo","Gwanak","Gwang-jin","Guro","Geum-cheon","Nowon","Dobong","Dong-daemun","Dongjak","Mapo","Seodaemun","Seocho","Seongdong","Seongbuk","Songpa","Yangcheon","Yeongdeungpo","Yongsan","Eun-pyeong","Jongro","Jung","Jungnang")
+gubyeol <- gubyeol[,-3]
+gumean <- gumean[,c(-3,-4,-5)]
+colnames(gubyeol) <- c("id","sum_tel")
+colnames(gumean) <- c("id","mean_tel")
+seoul_data1 <- seoul_ffd%>%full_join(gubyeol)
+seoul_data1
+seoul_data2 <- seoul_ffd%>%full_join(gumean)
+
+unique(seoul_data1$sum_tel)
+unique(seoul_data2$mean_tel)
+seoul_data2[which(is.na(seoul_data2$mean_tel)=="TRUE"),]
+k <- ggplot(seoul_data1, aes(x=long, y=lat, group=group)) + 
+  geom_polygon(aes(fill=sum_tel,colour = "#000000"),alpha=0.9) +scale_fill_gradient(low='yellow',high='red')
+
+k2 <- ggplot(seoul_data2, aes(x=long, y=lat, group=group)) + 
+  geom_polygon(aes(fill=mean_tel,colour = "#000000"),alpha=0.9) +scale_fill_gradient(low='yellow',high='red')
+
+
+ggsave("C:/Users/82104/Desktop/sum_tel.png",k)
+ggsave("C:/Users/82104/Desktop/mean_tel.png",k2)
+```
